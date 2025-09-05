@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  audioplayers: ^5.2.1
   flutter:
     sdk: flutter
 
@@ -58,6 +59,8 @@ flutter:
     - assets/img/metronome.png
     - assets/img/guitare.png
     - assets/img/guitare_icone.png
+    - assets/sounds/tick.wav
+    - assets/sounds/tock.wav
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
