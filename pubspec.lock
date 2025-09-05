@@ -200,14 +200,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.7"
-  pitchupdart:
-    dependency: "direct main"
-    description:
-      name: pitchupdart
-      sha256: "42a5bf627d34fcc23f1ee2da673e2ffc3b3853a0c1c43eca61fddd318a6d20fb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.6"
   plugin_platform_interface:
     dependency: transitive
     description:

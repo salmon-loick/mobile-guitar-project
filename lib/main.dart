@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_guitar_project/tuning_handler.dart';
-import 'package:pitch_detector_dart/pitch_detector.dart';
-import 'package:pitchupdart/instrument_type.dart';
-import 'package:provider/provider.dart';
-import 'package:record/record.dart';
+import 'package:mobile_guitar_project/model/tuning_handler.dart';
+import 'package:mobile_guitar_project/model/freq_handler.dart';
 
-import 'PitchHandlerV2.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pitch_detector_dart/pitch_detector.dart';
+import 'package:record/record.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +12,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  //final PitchHandlerV2 pitchHandlerV2 = PitchHandlerV2(InstrumentType.guitar);
 
   // This widget is the root of your application.
   @override
@@ -28,8 +25,8 @@ class MyApp extends StatelessWidget {
             create: (context) => PitchDetector(),
           ),
 
-          RepositoryProvider<PitchHandlerV2>(
-            create: (context) => PitchHandlerV2(InstrumentType.guitar),
+          RepositoryProvider<FreqHandler>(
+            create: (context) => FreqHandler(),
           ),
 
         ],
@@ -39,7 +36,7 @@ class MyApp extends StatelessWidget {
               create: (context) => TuningHandler(
                 context.read<AudioRecorder>(),
                 context.read<PitchDetector>(),
-                context.read<PitchHandlerV2>(),
+                context.read<FreqHandler>(),
               ),
             ),
           ],
@@ -80,12 +77,16 @@ class MyHomePage extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(
-              tuningHandlerState.centsOffString,
+              "${tuningHandlerState.centsOff.toStringAsFixed(0)} cents",
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              "${tuningHandlerState.actualFrequency.toStringAsFixed(0)} Hz",
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<PitchHandlerV2>().setCustom({
+                context.read<FreqHandler>().setCustom({
                   "E2": 82.41,
                   "A2": 110.0,
                   "D3": 146.83,
@@ -98,7 +99,7 @@ class MyHomePage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                context.read<PitchHandlerV2>().setChromatic();
+                context.read<FreqHandler>().setChromatic();
               },
               child: Text("Passer en mode Chromatic"),
             ),
