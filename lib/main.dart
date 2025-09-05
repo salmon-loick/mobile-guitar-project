@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_guitar_project/tuning_handler.dart';
 import 'package:pitch_detector_dart/pitch_detector.dart';
 import 'package:pitchupdart/instrument_type.dart';
-import 'package:pitchupdart/pitch_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 

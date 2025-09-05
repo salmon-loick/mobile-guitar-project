@@ -4,8 +4,6 @@ import 'package:mobile_guitar_project/tuning_result.dart';
 import 'package:buffered_list_stream/buffered_list_stream.dart';
 import 'package:pitch_detector_dart/pitch_detector.dart';
 import 'package:record/record.dart';
-import 'package:pitchupdart/pitch_handler.dart';
-import 'package:pitchupdart/instrument_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'PitchHandlerV2.dart';
