@@ -11,17 +11,29 @@ class FreqHandler {
   late List<String> _noteStrings;
   Map<String, double>? _customTunings;
 
-  FreqHandler() { setChromatic(); }
+  FreqHandler() {
+    setChromatic();
+  }
 
   void setChromatic() {
     _mode = TuningMode.chromatic;
     _noteStrings = [
-      "C","C#","D","D#","E","F","F#","G","G#","A","A#","B"
+      "C",
+      "C#",
+      "D",
+      "D#",
+      "E",
+      "F",
+      "F#",
+      "G",
+      "G#",
+      "A",
+      "A#",
+      "B"
     ];
     _minimumFreq = 60.0;
     _maximumFreq = 1600.0;
   }
-
 
   void setCustom(Map<String, double> customTunings,
       {double toleranceRatio = 0.12}) {
@@ -48,11 +60,10 @@ class FreqHandler {
     _noteStrings = _customTunings!.keys.toList();
   }
 
-
   Future<TuningResult> handleFreq(double freq) {
     if (!_isFreqInRange(freq)) {
-      return Future.value(
-          TuningResult(note: "Out of range", actualFrequency: freq, expectedFrequency: 0.0) );
+      return Future.value(TuningResult(
+          note: "Out of range", actualFrequency: freq, expectedFrequency: 0.0));
     }
     String note;
     double expectedFrequency;
@@ -65,8 +76,10 @@ class FreqHandler {
       note = closest.key;
       expectedFrequency = closest.value;
     }
-    return Future.value(
-      TuningResult(note: note, actualFrequency: freq, expectedFrequency: expectedFrequency));
+    return Future.value(TuningResult(
+        note: note,
+        actualFrequency: freq,
+        expectedFrequency: expectedFrequency));
   }
 
   /// Checks if pitch is between the range of the instrument
@@ -87,7 +100,7 @@ class FreqHandler {
   MapEntry<String, double> _findClosestCustom(double frequency) {
     // Trouver la note la plus proche en fréquence
     return _customTunings!.entries.reduce((a, b) =>
-    (frequency - a.value).abs() < (frequency - b.value).abs() ? a : b);
+        (frequency - a.value).abs() < (frequency - b.value).abs() ? a : b);
   }
 
   int _midiFromFrequency(double frequency) {

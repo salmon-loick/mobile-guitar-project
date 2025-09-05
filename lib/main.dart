@@ -1,29 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_guitar_project/model/tuning_handler.dart';
-import 'package:mobile_guitar_project/model/freq_handler.dart';
+import 'package:mobile_guitar_project/routes/router.dart';
+import 'package:mobile_guitar_project/routes/routes.dart';
+import 'package:mobile_guitar_project/screens/Home.dart';
+import 'package:mobile_guitar_project/screens/Tuner.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_guitar_project/screens/tuning_tester.dart';
-import 'package:pitch_detector_dart/pitch_detector.dart';
-import 'package:record/record.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const GuitarApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class GuitarApp extends StatelessWidget {
+  const GuitarApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+      title: 'GuitarWatch',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.light().copyWith(
+        scaffoldBackgroundColor: Colors.white,
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.black),
+        ),
       ),
-      home: const TuningTester(title: 'Tuning Tester'),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF1C2A39),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.white),
+        ),
+      ),
+      themeMode: ThemeMode.system,
+      initialRoute: kHomeRoute,
+      routes: router,
     );
+
   }
 }
+
+

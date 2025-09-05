@@ -6,10 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pitch_detector_dart/pitch_detector.dart';
 import 'package:record/record.dart';
 
-
 class TuningTester extends StatelessWidget {
   const TuningTester({super.key, required this.title});
+
   final String title;
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -20,29 +21,26 @@ class TuningTester extends StatelessWidget {
         RepositoryProvider<PitchDetector>(
           create: (context) => PitchDetector(),
         ),
-
         RepositoryProvider<FreqHandler>(
           create: (context) => FreqHandler(),
         ),
       ],
-
       child: MultiBlocProvider(
         providers: [
           BlocProvider<TuningHandler>(
-          create: (context) => TuningHandler(
-            context.read<AudioRecorder>(),
-            context.read<PitchDetector>(),
-            context.read<FreqHandler>(),
+            create: (context) => TuningHandler(
+              context.read<AudioRecorder>(),
+              context.read<PitchDetector>(),
+              context.read<FreqHandler>(),
+            ),
           ),
-        ),
         ],
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-            title: Text(title),
-          ),
-          body: TuningResultDisplay()
-        ),
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              title: Text(title),
+            ),
+            body: TuningResultDisplay()),
       ),
     );
   }
@@ -89,10 +87,8 @@ class TuningResultDisplay extends StatelessWidget {
             },
             child: Text("Passer en mode Chromatic"),
           ),
-
         ],
       ),
     );
   }
-
 }

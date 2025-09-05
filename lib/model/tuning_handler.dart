@@ -7,8 +7,7 @@ import 'package:pitch_detector_dart/pitch_detector.dart';
 import 'package:record/record.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
-class TuningHandler extends Cubit<TuningResult>{
+class TuningHandler extends Cubit<TuningResult> {
   final PitchDetector _pitchDetector;
   final AudioRecorder _audioRecorder;
   final FreqHandler _pitchHandler;
@@ -17,32 +16,34 @@ class TuningHandler extends Cubit<TuningResult>{
   List<String> _noteBuffer = [];
 
   TuningHandler(
-      this._audioRecorder,
-      this._pitchDetector,
-      this._pitchHandler,
-      { int bufferSize = 5,}
-      ):_bufferSize = bufferSize, super(TuningResult(note: "", actualFrequency: 0.0, expectedFrequency: 0.0))
-  {
+    this._audioRecorder,
+    this._pitchDetector,
+    this._pitchHandler, {
+    int bufferSize = 5,
+  })  : _bufferSize = bufferSize,
+        super(TuningResult(
+            note: "", actualFrequency: 0.0, expectedFrequency: 0.0)) {
     _init();
   }
 
   _init() async {
-    if(await _audioRecorder.hasPermission() == false) {
+    if (await _audioRecorder.hasPermission() == false) {
       // Handle the lack of permission as needed
       if (kDebugMode) {
         print("Microphone permission denied");
       }
       // Display a message
-      emit(TuningResult(note: 'No mic permission', actualFrequency: 0.0, expectedFrequency: 0.0));
+      emit(TuningResult(
+          note: 'No mic permission',
+          actualFrequency: 0.0,
+          expectedFrequency: 0.0));
     }
-    final recordStream = await _audioRecorder.startStream(
-        const RecordConfig(
-          encoder: AudioEncoder.pcm16bits,
-          numChannels: 1,
-          bitRate: 128000,
-          sampleRate: PitchDetector.DEFAULT_SAMPLE_RATE,
-        )
-    );
+    final recordStream = await _audioRecorder.startStream(const RecordConfig(
+      encoder: AudioEncoder.pcm16bits,
+      numChannels: 1,
+      bitRate: 128000,
+      sampleRate: PitchDetector.DEFAULT_SAMPLE_RATE,
+    ));
 
     var audioSampleBufferedStream = bufferedListStream(
       recordStream.map((event) {
@@ -82,11 +83,13 @@ class TuningHandler extends Cubit<TuningResult>{
                 .key;*/
 
             // --- Émettre la fréquence lissée ---
-            emit(TuningResult(note: tuningResult.note, actualFrequency: smoothedFreq, expectedFrequency: tuningResult.expectedFrequency));
+            emit(TuningResult(
+                note: tuningResult.note,
+                actualFrequency: smoothedFreq,
+                expectedFrequency: tuningResult.expectedFrequency));
           });
         }
-      });}
+      });
+    }
   }
 }
-
-
