@@ -76,12 +76,11 @@ class _MetronomeState extends State<Metronome> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final activeColor = isDark ? Colors.orangeAccent : Colors.blueAccent;
-    final inactiveColor = isDark ? Colors.grey.shade800 : Colors.grey.shade300;
+    final activeColor = Theme.of(context).highlightColor;
+    final inactiveColor = Theme.of(context).unselectedWidgetColor;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Métronome 🎵")),
+      appBar: AppBar(title: const Text("Métronome")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -115,8 +114,7 @@ class _MetronomeState extends State<Metronome> {
                 ),
                 Text(
                   "$bpm BPM",
-                  style: const TextStyle(
-                      fontSize: 28, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
                 IconButton(
                   onPressed: () =>

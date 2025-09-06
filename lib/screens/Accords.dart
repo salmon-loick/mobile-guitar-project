@@ -29,7 +29,8 @@ class _AccordsState extends State<Accords> {
   // Variables pour la persistance locale
   Directory? _appDir; // ApplicationDocumentsDirectory
   File? _dataFile; // <appDir>/tablatures.json : liste des images utilisateur
-  Directory? _imagesDir; // <appDir>/tablatures_images : copie des images importées
+  Directory?
+      _imagesDir; // <appDir>/tablatures_images : copie des images importées
 
   // Utilisé pour forcer un rebuild si le thème change
   Brightness? _lastBrightness;
@@ -208,7 +209,6 @@ class _AccordsState extends State<Accords> {
   // Construction de l'interface utilisateur
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     // Scaffold principal : AppBar + grille d'images + FloatingActionButton
     return Scaffold(
@@ -228,11 +228,11 @@ class _AccordsState extends State<Accords> {
             final String imagePath = accord['image'] as String;
             return Column(
               children: [
-                Text(
-                  accord["titre"] as String,
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
+                Text(accord["titre"] as String,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold)),
                 GestureDetector(
                   onLongPress: () => _confirmDelete(index),
                   onTap: () {
@@ -247,8 +247,8 @@ class _AccordsState extends State<Accords> {
                           onDelete: isAsset
                               ? null
                               : () async {
-                                  final idx =
-                                      accords.indexWhere((a) => a['image'] == imagePath);
+                                  final idx = accords.indexWhere(
+                                      (a) => a['image'] == imagePath);
                                   if (idx != -1) {
                                     await _confirmDelete(idx);
                                   }
@@ -263,25 +263,19 @@ class _AccordsState extends State<Accords> {
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade400),
+                      border: Border.all(color: Theme.of(context).dividerColor),
                     ),
 
                     // Affichage : si asset utilise Image.asset sinon Image.file
                     child: isAsset
                         ? Image.asset(
                             imagePath,
-                            key: ValueKey(
-                                'asset-$imagePath-${Theme.of(context).brightness}'),
                             height: 120,
                             fit: BoxFit.contain,
-                            color:
-                                isDark ? Colors.white.withOpacity(0.9) : null,
-                            colorBlendMode: isDark ? BlendMode.srcIn : null,
+                            color: Theme.of(context).primaryColor,
                           )
                         : Image.file(
                             File(imagePath),
-                            key: ValueKey(
-                                'file-$imagePath-${Theme.of(context).brightness}'),
                             height: 120,
                             fit: BoxFit.contain,
                           ),
@@ -309,7 +303,8 @@ class AccordDetailPage extends StatelessWidget {
   final String titre;
   final String imagePath;
   final bool isAsset;
-  final Future<void> Function()? onDelete; // callback optionnel pour déclencher suppression
+  final Future<void> Function()?
+      onDelete; // callback optionnel pour déclencher suppression
 
   const AccordDetailPage({
     Key? key,
@@ -367,8 +362,7 @@ class AccordDetailPage extends StatelessWidget {
               ? Image.asset(
                   imagePath,
                   fit: BoxFit.contain,
-                  color: isDark ? Colors.white.withOpacity(0.9) : null,
-                  colorBlendMode: isDark ? BlendMode.srcIn : null,
+                  color: Theme.of(context).primaryColor,
                 )
               : Image.file(File(imagePath), fit: BoxFit.contain),
         ),
