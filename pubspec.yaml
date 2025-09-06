@@ -74,6 +74,13 @@ flutter:
     - assets/sounds/tick.wav
     - assets/sounds/tock.wav
     - assets/img/icone.png
+    - assets/img/AccordDo.png
+    - assets/img/AccordRe.png
+    - assets/img/AccordMi.png
+    - assets/img/AccordFa.png
+    - assets/img/AccordSol.png
+    - assets/img/AccordLa.png
+    - assets/img/AccordSi.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
