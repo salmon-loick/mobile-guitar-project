@@ -8,9 +8,13 @@ class DetectedNoteDisplay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircleAvatar(
-      radius: 20,
-      backgroundColor: Colors.blueAccent,
-      child: Text(note, style: TextStyle(color: Colors.white, fontSize: 20)),
+      radius: 21,
+      backgroundColor: Theme.of(context).primaryColor,
+      child: CircleAvatar(
+        radius: 20,
+        backgroundColor: Theme.of(context).indicatorColor,
+        child: Text(note, style: TextStyle(color: Colors.white, fontSize: 20)),
+      ),
     );
   }
 }

@@ -8,19 +8,21 @@ class GuitarHead extends StatelessWidget {
   final Map<String, double> tuningNotes;
   final int? selectedIndex;
   final Function(int) onBubblePressed;
+  final int detectedIndex;
 
   const GuitarHead({
     Key? key,
     required this.tuningNotes,
     required this.onBubblePressed,
     this.selectedIndex,
+    required this.detectedIndex,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     // Découper la liste en 2 moitiés
     final mid = (tuningNotes.length / 2).ceil();
-    final Map<String, double> leftNotes = LinkedHashMap.fromEntries(tuningNotes.entries.toList().sublist(0, mid).reversed);
+    final Map<String, double> leftNotes = LinkedHashMap.fromEntries(tuningNotes.entries.toList().sublist(0, mid));
     final Map<String, double> rightNotes = LinkedHashMap.fromEntries(tuningNotes.entries.toList().sublist(mid));
 
 
@@ -34,6 +36,7 @@ class GuitarHead extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(bottom: 50.0),
               child: ListView.separated(
+                reverse: true,
                 itemCount: leftNotes.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -45,6 +48,7 @@ class GuitarHead extends StatelessWidget {
                     frequency: leftNotes[key]!,
                     isSelected: selectedIndex == index,
                     onTap: () => onBubblePressed(index),
+                    isDetected: index == detectedIndex,
                   );
                 },
                 separatorBuilder: (context, i) => const SizedBox(height: 24), // espace vertical fixe
@@ -81,6 +85,7 @@ class GuitarHead extends StatelessWidget {
                     frequency: rightNotes[key]!,
                     isSelected: selectedIndex == index,
                     onTap: () => onBubblePressed(index),
+                    isDetected: index == detectedIndex,
                   );
                 },
                 separatorBuilder: (context, i) => const SizedBox(height: 24), // espacement vertical

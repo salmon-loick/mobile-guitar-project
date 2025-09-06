@@ -2,16 +2,19 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mobile_guitar_project/partials/detected_note_display.dart';
 import 'package:mobile_guitar_project/partials/tuning_status.dart';
+import 'package:mobile_guitar_project/styles/colors.dart';
 
 class TuningGauge extends StatelessWidget {
   final String note;
   final double centsOff; // ex: -30, +15
   final double maxCents; // amplitude max, ex: ±50
+  final bool pitchDetected;
 
   const TuningGauge({
     Key? key,
     required this.note,
     required this.centsOff,
+    required this.pitchDetected,
     this.maxCents = 100,
   }) : super(key: key);
 
@@ -21,11 +24,11 @@ class TuningGauge extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
-        TuningStatus(centsOff: centsOff),
+        TuningStatus(centsOff: centsOff,isTuning: pitchDetected,),
         CustomPaint(
           size: const Size(400, 200), // largeur x hauteur du widget
-          painter: _GaugePainter(
-              centsOff: centsOff, maxCents: maxCents),
+          painter: _GaugePainter(context: context,
+              centsOff: centsOff, maxCents: maxCents, paintNeedle: pitchDetected),
         ),
         DetectedNoteDisplay(note: note)
       ],
@@ -34,11 +37,13 @@ class TuningGauge extends StatelessWidget {
 }
 
 class _GaugePainter extends CustomPainter {
+  final BuildContext context;
   final double centsOff;
   final double maxCents;
+  final bool paintNeedle;
 
-  _GaugePainter(
-      {required this.centsOff, required this.maxCents});
+  _GaugePainter({required this.context,
+      required this.centsOff, required this.maxCents, this.paintNeedle = true});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -51,7 +56,7 @@ class _GaugePainter extends CustomPainter {
 
     // --- Fond derrière la jauge (uniquement sous l'arc) ---
     final bgPaint = Paint()
-      ..color = Colors.grey.shade200
+      ..color = Theme.of(context).unselectedWidgetColor
       ..style = PaintingStyle.fill
       ..strokeWidth = 20; // épaisseur du fond (comme l'arc)
     canvas.drawArc(
@@ -60,6 +65,17 @@ class _GaugePainter extends CustomPainter {
       sweepAngle + 0.2, // léger décalage pour couvrir les graduations
       true, // false = arc, true = secteur
       bgPaint,
+    );
+    final borderPaint = Paint()
+      ..color = Theme.of(context).primaryColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2; // bordure fine
+    canvas.drawArc(
+      Rect.fromCircle(center: center, radius: radius+25),
+      startAngle - 0.1,
+      sweepAngle + 0.2,
+      true,
+      borderPaint,
     );
 
     // Graduations principales et secondaires
@@ -82,7 +98,7 @@ class _GaugePainter extends CustomPainter {
           center.dx + cos(angle) * radius, center.dy + sin(angle) * radius);
 
       canvas.drawLine(inner, outer, Paint()
-        ..color = Colors.black
+        ..color = Theme.of(context).primaryColor
         ..strokeWidth = 2);
 
       // Texte uniquement sur graduations principales
@@ -90,8 +106,8 @@ class _GaugePainter extends CustomPainter {
         final textPainter = TextPainter(
           text: TextSpan(
             text: value.toInt().toString(),
-            style: const TextStyle(
-                fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black),
+            style: TextStyle(
+                fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),
           ),
           textDirection: TextDirection.ltr,
         );
@@ -108,22 +124,23 @@ class _GaugePainter extends CustomPainter {
     }
 
     // Aiguille
-    final needleRatio = (centsOff / maxCents).clamp(-1.0, 1.0);
-    final needleAngle = startAngle + (sweepAngle / 2) +
-        (needleRatio * (sweepAngle / 2));
-    final needleEnd = Offset(center.dx + cos(needleAngle) * radius,
-        center.dy + sin(needleAngle) * radius);
-    canvas.drawLine(
-      center,
-      needleEnd,
-      Paint()
-        ..color = (centsOff.abs() < 5 ? Colors.green : Colors.red)
-        ..strokeWidth = 3,
-    );
-
+    if(paintNeedle) {
+      final needleRatio = (centsOff / maxCents).clamp(-1.0, 1.0);
+      final needleAngle = startAngle + (sweepAngle / 2) +
+          (needleRatio * (sweepAngle / 2));
+      final needleEnd = Offset(center.dx + cos(needleAngle) * radius,
+          center.dy + sin(needleAngle) * radius);
+      canvas.drawLine(
+        center,
+        needleEnd,
+        Paint()
+          ..color = (centsOff.abs() < 5 ? kGreenColor : kRedColor)
+          ..strokeWidth = 3,
+      );
+    }
     // Pivot central
     canvas.drawCircle(center, 6, Paint()
-      ..color = Colors.black);
+      ..color = Theme.of(context).primaryColor);
   }
 
   @override

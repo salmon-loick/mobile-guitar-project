@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_guitar_project/routes/routes.dart';
 import 'package:mobile_guitar_project/screens/Accords.dart';
-
-import 'Home.dart';
 import 'Metronome.dart';
 import 'Tuner.dart';
 

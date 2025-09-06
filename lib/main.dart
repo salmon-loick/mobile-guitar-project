@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_guitar_project/routes/router.dart';
 import 'package:mobile_guitar_project/routes/routes.dart';
-import 'package:mobile_guitar_project/screens/Home.dart';
-import 'package:mobile_guitar_project/screens/Tuner.dart';
 import 'package:mobile_guitar_project/styles/theme.dart';
 
 

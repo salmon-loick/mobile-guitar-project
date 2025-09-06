@@ -11,16 +11,11 @@ class TuningHandler extends Cubit<TuningResult> {
   final PitchDetector _pitchDetector;
   final AudioRecorder _audioRecorder;
   final FreqHandler _pitchHandler;
-  final int _bufferSize;
-  List<double> _freqBuffer = [];
-  List<String> _noteBuffer = [];
 
   TuningHandler(
     this._audioRecorder,
     this._pitchDetector,
-    this._pitchHandler, {
-    int bufferSize = 5,
-  })  : _bufferSize = bufferSize,
+    this._pitchHandler):
         super(TuningResult(
             note: "", actualFrequency: 0.0, expectedFrequency: 0.0)) {
     _init();
@@ -43,6 +38,7 @@ class TuningHandler extends Cubit<TuningResult> {
       numChannels: 1,
       bitRate: 128000,
       sampleRate: PitchDetector.DEFAULT_SAMPLE_RATE,
+      noiseSuppress: true,
     ));
 
     var audioSampleBufferedStream = bufferedListStream(
@@ -60,6 +56,7 @@ class TuningHandler extends Cubit<TuningResult> {
         if (detectedPitch.pitched) {
           _pitchHandler.handleFreq(detectedPitch.pitch).then((tuningResult) {
             // --- Buffer pour les freq (moyenne mobile numérique) ---
+            /*
             _freqBuffer.add(tuningResult.actualFrequency);
             if (_freqBuffer.length > _bufferSize) {
               _freqBuffer.removeAt(0);
@@ -81,12 +78,9 @@ class TuningHandler extends Cubit<TuningResult> {
                 .entries
                 .reduce((a, b) => a.value >= b.value ? a : b)
                 .key;*/
-
+            */
             // --- Émettre la fréquence lissée ---
-            emit(TuningResult(
-                note: tuningResult.note,
-                actualFrequency: smoothedFreq,
-                expectedFrequency: tuningResult.expectedFrequency));
+            emit(tuningResult);
           });
         }
       });

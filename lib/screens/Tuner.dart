@@ -50,7 +50,9 @@ class _TunerState extends State<Tuner> {
 class TunerDisplay extends StatefulWidget {
 
 
-  TunerDisplay({super.key});
+  TunerDisplay({super.key}){
+    // initialisation du FreqHandler avec l'accordage standard
+  }
 
   @override
   State<TunerDisplay> createState() => _TunerDisplayState();
@@ -58,6 +60,13 @@ class TunerDisplay extends StatefulWidget {
 }
 
 class _TunerDisplayState extends State<TunerDisplay> {
+  @override
+  void initState() {
+    super.initState();
+    // initialisation du FreqHandler avec l'accordage standard
+    context.read<FreqHandler>().setCustom(standardTuning);
+  }
+
   void _openSettings() {
     // TODO: navigation vers la page paramètres
     debugPrint("Naviguer vers paramètres");
@@ -65,7 +74,19 @@ class _TunerDisplayState extends State<TunerDisplay> {
 
   void _onStringSelected(int index) {
     setState(() {
-      selectedString = index;
+      if (selectedString == index) {
+        selectedString = null;
+        // passage en mode automatique
+        context.read<FreqHandler>().setCustom(standardTuning);
+        return;
+      }
+      else {
+        selectedString = index;
+        // passage en mode manuel
+        selectedNote = standardTuning.keys.elementAt(index);
+        double freq = standardTuning[selectedNote]!;
+        context.read<FreqHandler>().setCustom({selectedNote: freq}, toleranceRatio: 0.5);
+      }
     });
   }
   String tuningName = "Guitare Standard";
@@ -79,14 +100,17 @@ class _TunerDisplayState extends State<TunerDisplay> {
     "E4": 329.63,
   });
 
-  String detectedNote = "E2";
-
   int? selectedString;
+  String selectedNote = "";
 
   @override
   Widget build(BuildContext context) {
-    context.read<FreqHandler>().setCustom(standardTuning);
-    final tuningHandlerState = context.watch<TuningHandler>().state;
+    int detectedIndex = -1;
+
+    final result = context.watch<TuningHandler>().state;
+    if (selectedString == null) {
+      detectedIndex = standardTuning.values.toList().indexOf(result.expectedFrequency);
+    }
     return Column(children: [
       TunerTopBar(
         tuningName: tuningName,
@@ -97,13 +121,15 @@ class _TunerDisplayState extends State<TunerDisplay> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TuningGauge(
-              note: tuningHandlerState.note,
-              centsOff: tuningHandlerState.centsOff,
+              note: selectedString!=null ? selectedNote: result.note,
+              centsOff: result.centsOff,
+              pitchDetected: result.note.isNotEmpty,
             ),
             GuitarHead(
               tuningNotes: standardTuning,
               selectedIndex: selectedString,
               onBubblePressed: _onStringSelected,
+              detectedIndex: detectedIndex,
             ),
           ],
         ),
