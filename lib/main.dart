@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_guitar_project/routes/router.dart';
 import 'package:mobile_guitar_project/routes/routes.dart';
-import 'package:mobile_guitar_project/screens/Home.dart';
-import 'package:mobile_guitar_project/screens/Tuner.dart';
 
 
 void main() {

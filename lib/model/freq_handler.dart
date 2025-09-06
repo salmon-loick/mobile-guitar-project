@@ -63,7 +63,7 @@ class FreqHandler {
   Future<TuningResult> handleFreq(double freq) {
     if (!_isFreqInRange(freq)) {
       return Future.value(TuningResult(
-          note: "Out of range", actualFrequency: freq, expectedFrequency: 0.0));
+          note: "", actualFrequency: freq, expectedFrequency: 0.0));
     }
     String note;
     double expectedFrequency;

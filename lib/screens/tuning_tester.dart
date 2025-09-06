@@ -49,6 +49,7 @@ class TuningTester extends StatelessWidget {
 class TuningResultDisplay extends StatelessWidget {
   const TuningResultDisplay({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     final tuningHandlerState = context.watch<TuningHandler>().state;

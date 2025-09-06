@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/img/metronome.png
     - assets/img/guitare.png
+    - assets/img/guitare_head.png
     - assets/img/guitare_icone.png
     - assets/sounds/tick.wav
     - assets/sounds/tock.wav
