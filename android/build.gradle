@@ -1,8 +1,17 @@
+ext.flutter = [
+        compileSdkVersion: 34,
+        minSdkVersion    : 21,
+        targetSdkVersion : 34,
+        ndkVersion       : "25.1.8937393",
+        source : ".."
+]
+
 allprojects {
     repositories {
         google()
         mavenCentral()
     }
+
 }
 
 rootProject.buildDir = "../build"
@@ -10,7 +19,17 @@ subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {
-    project.evaluationDependsOn(":app")
+    afterEvaluate { proj ->
+        if (proj.hasProperty("android")) {
+            try {
+                proj.android.compileSdkVersion = 34
+                if (proj.android.hasProperty("defaultConfig")) {
+                    proj.android.defaultConfig.minSdkVersion = 21
+                    proj.android.defaultConfig.targetSdkVersion = 34
+                }
+            } catch (ignore) { /* certains modules peuvent échouer, on ignore */ }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {
