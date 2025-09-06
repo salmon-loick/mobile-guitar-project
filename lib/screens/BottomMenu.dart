@@ -56,7 +56,7 @@ class BottomMenu extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.library_music),
             onPressed: () {
-              changeChild(const Accords());
+              changeChild(Accords());
 
               /*Navigator.pushNamed(
                 context,
