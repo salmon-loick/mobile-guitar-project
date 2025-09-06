@@ -1,6 +1,4 @@
-# Mon Application
-
-> Vous vous adressez potentiellement à un futur employeur et donc une personne qui n'aura pas nécessairement l'occasion de compiler votre projet. Votre `README.md` contiendra donc au moins :
+# GuitarWatch
 
 ## 📁 Présentation des Principaux Dossiers
 
@@ -8,29 +6,118 @@
 
 ## 🚀 Présentation de l'Application
 
-> Une présentation de votre application. Ce dernier répond à un besoin, présentez-le. Ne faites aucune hypothèse sur le niveau de connaissances de votre lecteur. Vous vous adressez ici à un internaute quelconque qui découvre votre dépôt. Évitez un jargon technique dans cette partie de votre présentation.
+GuitarWatch s'adresse à tous les passionnés de guitare, qu'ils soient débutants ou expérimentés. L'application vise à offrir une expérience immersive en permettant aux utilisateurs de suivre et d'améliorer leur pratique de la guitare à travers des fonctionnalités interactives et personnalisées.
+Avec GuitarWatch, vous pouvez: 
+- Accorder votre guitare facilement grâce à un accordeur intégré.
+- Jouer en rythme avec un métronome personnalisable.
+- Explorer une listes d'accords à apprendre et à pratiquer.
+- Ajouter vos propres partitions et tablatures.
+De plus, une notification quotidienne vous rappelle de pratiquer, vous aidant ainsi à rester motivé et à progresser régulièrement.
 
 ## 🌐 Étude de l'Existant
+ 
+### Guitar Tuna
+Guitar Tuna est une application populaire pour accorder les guitares. Elle offre une interface conviviale et des fonctionnalités supplémentaires telles que des jeux d'accords et des exercices de rythme.
+#### Points forts:
+- Interface simple, rapide et précise, adaptée à plusieurs instruments (guitare, basse, ukulélé ...)
+- Idéale pour les débutants grâce aux outils supplémentaires payant (accords, tablatures, leçon).
+- Bonne précision de l'accordage.
+#### Points faibles:
+- Version gratuite souvent envahie par la publicité et les incitations à passer à la version payante.
+- Moins précise que les tuners matériels dans des environnemnents bruyants ou scéniques.
 
-> Une brève étude de l'existant. L'idée étant de savoir si d'autres ont déjà couvert le besoin auquel vous essayez de répondre. Ce qui est demandé ici, au-delà d'une brève description, ce sont les points forts et les points faibles de ces différentes applications. Il peut être intéressant de faire un tableau pour mettre en regard les avantages et les inconvénients. Enfin, mettez des captures d'écran des applications afin que l'on comprenne mieux de quoi on parle.
+![GuitarTuna](img/GuitarTuna.png)
 
+### Chroma git hub -open source
+Chroma est une application open source disponible sur GitHub qui offre des fonctionnalités d'accordage pour les guitares et autres instruments à cordes.
+#### Points forts:
+- Application open-source sous licence MIT - grande flexibilité pour les modifications.
+- Idéal pour les développeurs souhaitant étudier ou adapter une application de tuning.
+- Interface simple et utilisable pour n'importe quel instrument à cordes.
+- Fonctionnalité de suppression de bruit
+- Paramétrage avancé de la précision ainsi que le choix d'algorithme de détection de note.
+#### Points faibles:
+- Abscence de version prête à l'emploi ou support utilisateur grand public.
+- Plus développé.
+- C'était publié auparavant sur le play Store mais plus maintenant.
+
+![Chroma](img/Chroma.jpg)
+
+### Pro Metronome 
+Pro Metronome est une application de métronome avancée qui offre une variété de fonctionnalités pour les musiciens de tous niveaux.
+#### Points forts:
+- Métronome modulable, très précis.
+- Interface utilisateur intuitive, pas de publicités en version de base 
+- Modes visuels, haptiques, flash (pratique en contexte musical bruyant) et outils pédagigiques comme le Rhythm Trainer.
+- #### Points faibles:
+- Certaines fonctionnalités avancées nécessitent un abonnement payant.
+
+![Pro Metronome](img/PoMetronome.jpg)
+
+### Fender Tune
+Fender Tune est une application d'accordage développée par la célèbre marque Fender, offrant des fonctionnalités pour accorder les guitares et autres instruments à cordes.
+#### Points forts:
+- Application gratuite sans publicité.
+- Mode Auto-Tune, chromatique et multiples tunings disponibles.
+- Bibiliothèque d'accords et de gammes intéractive, pistes de batterie et outils d'apprentissage (Via Tune plus).
+#### Points faibles:
+- Le tuning automatique peut manquer de fiabilité.
+- Problèmes pour enregistrer des tunings personnalisés ou accéder à certaines fonctionnalités.
+
+![Fender Tune](img/Fender.jpg)
+
+## Moodboard 
+![Moodboard](img/Moodboard.png)
 ## 🎯 Public Cible
 
-> Parlez de votre public cible. À qui s'adresse votre application et surtout comment prenez-vous en compte ce public-là ?
+Notre application s'adresse à tous les passionnés de guitare, qu'ils soient débutants ou experts.
+Les outils proposés par GuitarWatch sont conçus pour accompagner l'apprentissage et permettre le perfectionnement des compétences de chaque utilisateur.
 
 ## 📋 Fonctionnalités
+En tant qu'utilisateur, je dois pouvoir accorder ma guitare facilement avec l'application.
 
-> Une présentation des différentes fonctionnalités de votre application au travers de récits utilisateurs (user story). Soit une description courte et simple d’un besoin ou d’une attente exprimée par un utilisateur. Chacun de ces récits suit la syntaxe "En tant que **&lt;qui&gt;**, je veux **&lt;quoi&gt;** afin de **&lt;pourquoi&gt;**":
+En tant qu'utilisateur, je dois pouvoir choisir mon type d'accordage.
 
-> Le **qui** indique le rôle/statut de l’utilisateur à ce moment-là. Par exemple "membre premium" ou "utilisateur non identifié". Pour mieux illustrer la diversité des besoins, on peut également utiliser le concept de persona, c'est-à-dire une personne fictive et représentative à laquelle on peut s'identifier pour mieux comprendre ses attentes. L'identification et la description des personas se fait alors avant de commencer l'écriture des récits utilisateurs. Par exemple, "Odile est une enseignante qui utilise pour la première fois le système".
+En tant qu'utilisateur, je dois pouvoir choisir mon instrument à accorder.
 
-> Le **quoi** décrit succinctement la fonctionnalité ou le comportement attendu. Le but du récit n'est pas d'en fournir une explication exhaustive.
+En tant qu'utilisateur, je dois pouvoir utiliser un métronome pour m'aider à garder le rythme.
 
-> Le **pourquoi** permet d'identifier l'intérêt de la fonctionnalité et d'en justifier le développement. Il permet également de mieux évaluer la priorité des fonctionnalités. Pour chacune de ces fonctionnalités, présentées par un récit utilisateur, vous présenterez les maquettes qui s'y rapportent.
+En tant qu'utilisateur, je dois pouvoir changer les BPM de mon métronome.
+
+En tant qu'utilisateur, je dois pouvoir modifier la signature temporelle.
+
+En tant qu'utilisateur, je dois pouvoir avoir accès aux accords de base de mon apprentissage.
+
+En tant qu'utilisateur, je dois pouvoir ajouter des tablatures et des accords supplémentaires
+
+En tant qu'utilisateur, je dois pouvoir recevoir une notification quotidienne me rappelant de pratiquer la guitare.
+
+En tant qu'utilisateur, je dois pouvoir personnaliser l'heure de la notification quotidienne.
+
+En tant qu'utilisateur, je dois avoir une application qui s'adapte aussi bien au mode jour qu'au mode nuit de mon téléphone.
+
+En tant qu'utilisateur, je dois pouvoir m'enregistrer sur mon application.
+
+En tant qu'utilisateur, je dois avoir accès à mes partitions via le compte ainsi qu'aux paramètres.
+
+En tant qu'utilisateur, je dois pouvoir sauvegarder via mon compte le type d'accordage.
+
+En tant que développeur, je souhaite donner aux utilisateurs des badges pour qu'il passe plus de temps sur l'application.
 
 ## 📈 État d'Avancement
 
->  Un état d'avancement pour chaque fonctionnalité de votre application. Ceci doit évidemment être mis à jour régulièrement. Dès lors que vous aurez terminé de programmer une fonctionnalité, ajoutez dans le document `README.md` un `.gif` qui l'illustre. Vous pouvez vous servir de [GIF Brewery](https://apps.apple.com/us/app/gif-brewery-3-by-gfycat/id1081413713?mt=12) (Si vous êtes sous macOS) ou de [Gyazo](https://gyazo.com) (Si vous êtes sous Windows).
+- [ ] Ecran de connexion
+- [ ] Ecran d'accordage 
+- [x] Ecran de métronome
+- [x] Ecran d'accords
+- [ ] Ecran de paramètres
+- [ ] Persistance des données
+- [ ] Notifications
+- [ ] Système de badges
+- [ ] Changement d'instrument 
+- [ ] Paramétrage de l'accordage
+- [ ] configuration de la signature temporelle
+- [ ] Gamification 
 
 ## ⚙️ Compilation de l'Application
 

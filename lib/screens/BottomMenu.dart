@@ -27,10 +27,7 @@ class BottomMenu extends StatelessWidget {
               'assets/img/metronome.png',
               width: 26,
               height: 26,
-              color: Theme
-                  .of(context)
-                  .iconTheme
-                  .color,
+              color: Theme.of(context).iconTheme.color,
             ),
             tooltip: 'Métronome',
           ),
@@ -42,21 +39,18 @@ class BottomMenu extends StatelessWidget {
               'assets/img/guitare_icone.png',
               width: 26,
               height: 26,
-              color: Theme
-                  .of(context)
-                  .iconTheme
-                  .color,
+              color: Theme.of(context).iconTheme.color,
             ),
             tooltip: 'Guitare',
           ),
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.settings, size : 26),
             onPressed: () {},
           ),
           IconButton(
             icon: const Icon(Icons.library_music),
             onPressed: () {
-              changeChild(const Accords());
+              changeChild(Accords());
 
               /*Navigator.pushNamed(
                 context,

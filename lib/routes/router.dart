@@ -10,6 +10,6 @@ Map<String, WidgetBuilder> router = {
   // kTunerRoute: (context) => const Tuner(),
   kHomeRoute: (context) => Home(child: Tuner()),
   //kMetronomeRoute: (context) => const Metronome(),
-  kAccordRoute: (context) => const Accords(),
+  //kAccordRoute: (context) => const Accords(),
   //kSettingsRoute: (context) => const Settings(),
 };
