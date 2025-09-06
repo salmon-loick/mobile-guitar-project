@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_guitar_project/routes/router.dart';
 import 'package:mobile_guitar_project/routes/routes.dart';
 import 'package:mobile_guitar_project/screens/Home.dart';
@@ -7,6 +8,8 @@ import 'package:mobile_guitar_project/screens/Tuner.dart';
 
 void main() {
   runApp(const GuitarApp());
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 }
 
 class GuitarApp extends StatelessWidget {
