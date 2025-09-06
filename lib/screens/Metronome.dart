@@ -15,6 +15,7 @@ class _MetronomeState extends State<Metronome> {
   bool isPlaying = false;
   Timer? timer;
   final AudioPlayer _player = AudioPlayer();
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +39,6 @@ class _MetronomeState extends State<Metronome> {
     });
     // Joue immédiatement le premier son accentué
     _playTick(true);
-
 
     // Boucle pour les battements suivants
     timer = Timer.periodic(interval, (t) {
@@ -134,11 +134,13 @@ class _MetronomeState extends State<Metronome> {
               max: 300,
               divisions: 270,
               label: "$bpm",
-              onChanged: (value) {
-                setState(() => bpm = value.round());
+              onChangeEnd: (value) {
                 if (isPlaying) {
                   _startMetronome();
                 }
+              },
+              onChanged: (double value) {
+                setState(() => bpm = value.round());
               },
             ),
             const SizedBox(height: 40),
@@ -146,8 +148,8 @@ class _MetronomeState extends State<Metronome> {
             // Bouton Play  Stop
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 40, vertical: 16),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
