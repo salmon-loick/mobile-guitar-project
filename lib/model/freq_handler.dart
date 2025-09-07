@@ -9,7 +9,7 @@ class FreqHandler {
   late double _minimumFreq;
   late double _maximumFreq;
   late List<String> _noteStrings;
-  Map<String, double>? _customTunings;
+  Map<String, double> _customTunings = {};
 
   FreqHandler() {
     setChromatic();
@@ -38,7 +38,7 @@ class FreqHandler {
   void setCustom(Map<String, double> customTunings,
       {double toleranceRatio = 0.12}) {
     _mode = TuningMode.custom;
-
+    _customTunings.clear();
     // Normaliser les clés (ajouter octave si manquant)
     _customTunings = customTunings.map((note, freq) {
       final hasOctave = RegExp(r'\d$').hasMatch(note);
@@ -52,18 +52,18 @@ class FreqHandler {
     });
 
     // Définir min et max avec marge
-    final minFreq = _customTunings!.values.reduce(min);
-    final maxFreq = _customTunings!.values.reduce(max);
+    final minFreq = _customTunings.values.reduce(min);
+    final maxFreq = _customTunings.values.reduce(max);
     _minimumFreq = minFreq * (1.0 - toleranceRatio);
     _maximumFreq = maxFreq * (1.0 + toleranceRatio);
 
-    _noteStrings = _customTunings!.keys.toList();
+    _noteStrings = _customTunings.keys.toList();
   }
 
   Future<TuningResult> handleFreq(double freq) {
     if (!_isFreqInRange(freq)) {
       return Future.value(TuningResult(
-          note: "Out of range", actualFrequency: freq, expectedFrequency: 0.0));
+          note: "", actualFrequency: freq, expectedFrequency: 0.0));
     }
     String note;
     double expectedFrequency;
@@ -72,6 +72,11 @@ class FreqHandler {
       note = closest.key;
       expectedFrequency = closest.value;
     } else {
+      if(_customTunings.length == 1){
+        // Mode manuel, une seule note
+        note = _customTunings.keys.first;
+        expectedFrequency = _customTunings.values.first;
+      }
       final closest = _findClosestCustom(freq);
       note = closest.key;
       expectedFrequency = closest.value;
@@ -99,8 +104,8 @@ class FreqHandler {
   // Find closest note in custom tuning
   MapEntry<String, double> _findClosestCustom(double frequency) {
     // Trouver la note la plus proche en fréquence
-    return _customTunings!.entries.reduce((a, b) =>
-        (frequency - a.value).abs() < (frequency - b.value).abs() ? a : b);
+    return _customTunings.entries.reduce((a, b) =>
+          (frequency - a.value).abs() < (frequency - b.value).abs() ? a : b);
   }
 
   int _midiFromFrequency(double frequency) {

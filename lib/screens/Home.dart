@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_guitar_project/routes/routes.dart';
 
 import 'BottomMenu.dart';
 
 class Home extends StatefulWidget {
-  Widget child;
-  Home({super.key, required this.child});
+  final Widget initialChild;
+  Home({super.key, required this.initialChild});
 
   @override
   State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
-  late Widget child = widget.child;
+  late Widget child = widget.initialChild;
   void changeChild(Widget newChild) {
     child = newChild;
     setState(() {});
