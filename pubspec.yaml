@@ -48,6 +48,11 @@ dev_dependencies:
   flutter_launcher_icons: ^0.11.0
   launcher_name: ^1.0.2
   image_picker: ^0.8.7+3
+  firebase_auth: ^6.0.2
+  cloud_firestore: ^6.0.1
+  firebase_storage: ^13.0.1
+  firebase_core: ^4.1.0
+  email_validator: ^2.1.17
   flutter_test:
     sdk: flutter
 

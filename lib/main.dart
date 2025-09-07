@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mobile_guitar_project/routes/router.dart';
 import 'package:mobile_guitar_project/routes/routes.dart';
 import 'package:mobile_guitar_project/styles/theme.dart';
-
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
   runApp(const GuitarApp());
@@ -16,14 +16,19 @@ class GuitarApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GuitarWatch',
-      debugShowCheckedModeBanner: false,
-      theme: lightTheme,
-      darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
-      initialRoute: kHomeRoute,
-      routes: router,
+    return FutureBuilder(
+      future: Firebase.initializeApp(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        return MaterialApp(
+          title: 'GuitarWatch',
+          debugShowCheckedModeBanner: false,
+          theme: lightTheme,
+          darkTheme: darkTheme,
+          themeMode: ThemeMode.system,
+          initialRoute: kHomeRoute,
+          routes: router,
+        );
+      },
     );
 
   }
