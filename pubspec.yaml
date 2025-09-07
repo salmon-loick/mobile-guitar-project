@@ -54,6 +54,8 @@ dev_dependencies:
   firebase_core: ^4.1.0
   email_validator: ^2.1.17
   shared_preferences: ^2.0.0
+  flutter_local_notifications: ^17.1.2
+  timezone: ^0.9.2
   flutter_test:
     sdk: flutter
 

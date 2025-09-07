@@ -11,6 +11,8 @@ class TuningHandler extends Cubit<TuningResult> {
   final PitchDetector _pitchDetector;
   final AudioRecorder _audioRecorder;
   final FreqHandler _pitchHandler;
+  bool isRunning = true;
+  Stream<List<int>>? _recordStream;
 
   TuningHandler(
     this._audioRecorder,
@@ -18,8 +20,26 @@ class TuningHandler extends Cubit<TuningResult> {
     this._pitchHandler):
         super(TuningResult(
             note: "", actualFrequency: 0.0, expectedFrequency: 0.0)) {
-    _init();
+    _init().then((_) {;
+      _processAudioStream();
+    });
   }
+
+  void pause() {
+    if(isRunning){
+      isRunning = false;
+      _audioRecorder.pause();
+    }
+  }
+
+  void resume() {
+    if(!isRunning) {
+      isRunning = true;
+      _audioRecorder.resume();
+      _processAudioStream();
+    }
+  }
+
 
   _init() async {
     if (await _audioRecorder.hasPermission() == false) {
@@ -33,16 +53,17 @@ class TuningHandler extends Cubit<TuningResult> {
           actualFrequency: 0.0,
           expectedFrequency: 0.0));
     }
-    final recordStream = await _audioRecorder.startStream(const RecordConfig(
+    _recordStream = await _audioRecorder.startStream(const RecordConfig(
       encoder: AudioEncoder.pcm16bits,
       numChannels: 1,
       bitRate: 128000,
       sampleRate: PitchDetector.DEFAULT_SAMPLE_RATE,
       noiseSuppress: true,
     ));
-
+  }
+  void _processAudioStream() async {
     var audioSampleBufferedStream = bufferedListStream(
-      recordStream.map((event) {
+      _recordStream!.map((event) {
         return event.toList();
       }),
       //The library converts a PCM16 to 8bits internally. So we need twice as many bytes
@@ -50,6 +71,7 @@ class TuningHandler extends Cubit<TuningResult> {
     );
 
     await for (var audioSample in audioSampleBufferedStream) {
+      if(!isRunning) break;
       final intBuffer = Uint8List.fromList(audioSample);
 
       _pitchDetector.getPitchFromIntBuffer(intBuffer).then((detectedPitch) {

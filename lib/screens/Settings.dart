@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_guitar_project/routes/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../routes/routes.dart';
-import 'Home.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart';
+import 'package:mobile_guitar_project/main.dart';
+
+
 import 'login_form.dart';
 
-class Settings extends StatefulWidget {
+// Notifications plugin
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
+class Settings extends StatefulWidget {
   const Settings({super.key});
 
   @override
@@ -15,76 +23,178 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   bool _notificationsEnabled = false;
   bool _metronomeSound = true;
-  String? _username; // null = utilisateur non connecté
-  int _dailyGoal = 30; // minutes d’entraînement par défaut
+  String? _username;
+  int _dailyGoal = 30;
   ThemeMode _themeMode = ThemeMode.system;
+  TimeOfDay? _notifTime;
 
   @override
   void initState() {
     super.initState();
-    _loadSettings();
+    _loadPrefs();
+    _initNotifications();
   }
 
-  /// Charge les paramètres sauvegardés
-  Future<void> _loadSettings() async {
+  Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _notificationsEnabled = prefs.getBool('notifications') ?? false;
       _metronomeSound = prefs.getBool('metronomeSound') ?? true;
-      _dailyGoal = prefs.getInt('dailyGoal') ?? 30;
       _username = prefs.getString('username');
-      final themeIndex = prefs.getInt('themeMode') ?? 0;
-      _themeMode = ThemeMode.values[themeIndex];
+      _dailyGoal = prefs.getInt('dailyGoal') ?? 30;
+      final hour = prefs.getInt('notifHour');
+      final minute = prefs.getInt('notifMinute');
+      if (hour != null && minute != null) {
+        _notifTime = TimeOfDay(hour: hour, minute: minute);
+      }
+      _themeMode = (prefs.getString('themeMode') ?? 'system') == 'light'
+          ? ThemeMode.light
+          : (prefs.getString('themeMode') ?? 'system') == 'dark'
+              ? ThemeMode.dark
+              : ThemeMode.system;
     });
   }
 
-  /// Sauvegarde le bool notifications
+
+  Future<void> _initNotifications() async {
+    tz.initializeTimeZones();
+
+    const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const initSettings = InitializationSettings(android: androidInit);
+    await flutterLocalNotificationsPlugin.initialize(initSettings);
+
+    // Demande d’autorisation Android 13+
+    final androidImplementation =
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>();
+
+    await androidImplementation?.requestNotificationsPermission();
+
+    // Demande d’autorisation iOS
+    final iosImplementation =
+    flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<
+        IOSFlutterLocalNotificationsPlugin>();
+
+    await iosImplementation?.requestPermissions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+  }
+
+  Future<void> _saveBool(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(key, value);
+  }
+
+  Future<void> _saveInt(String key, int value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(key, value);
+  }
+
+  Future<void> _saveString(String key, String? value) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (value == null) {
+      await prefs.remove(key);
+    } else {
+      await prefs.setString(key, value);
+    }
+  }
+
   Future<void> _toggleNotifications(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('notifications', value);
-    setState(() {
-      _notificationsEnabled = value;
-    });
+    if (value) {
+      final pickedTime = await showTimePicker(
+        context: context,
+        initialTime: const TimeOfDay(hour: 19, minute: 0),
+      );
+      if (pickedTime != null) {
+        await _saveBool('notifications', true);
+        await _saveInt('notifHour', pickedTime.hour);
+        await _saveInt('notifMinute', pickedTime.minute);
+
+        _scheduleDailyNotification(pickedTime);
+
+        setState(() {
+          _notificationsEnabled = true;
+          _notifTime = pickedTime;
+        });
+      }
+    } else {
+      await _saveBool('notifications', false);
+      _cancelDailyNotification();
+      setState(() {
+        _notificationsEnabled = false;
+        _notifTime = null;
+      });
+    }
   }
 
-  /// Sauvegarde le bool son métronome
-  Future<void> _toggleMetronomeSound(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('metronomeSound', value);
+  Future<void> _scheduleDailyNotification(TimeOfDay time) async {
+    final now = DateTime.now();
+    final scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      time.hour,
+      time.minute,
+    );
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      "Rappel d'entraînement",
+      "Il est temps de pratiquer ta guitare 🎸",
+      TZDateTime.from(
+        scheduledDate.isBefore(now)
+            ? scheduledDate.add(const Duration(days: 1))
+            : scheduledDate,
+        local,
+      ),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'daily_reminder_channel',
+          'Rappel quotidien',
+          channelDescription:
+              'Envoie une notification chaque jour à heure fixe',
+          importance: Importance.max,
+          priority: Priority.high,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Notification programmée")),
+    );
+  }
+
+  Future<void> _cancelDailyNotification() async {
+    await flutterLocalNotificationsPlugin.cancel(0);
+  }
+
+  void _toggleMetronomeSound(bool value) {
+    _saveBool('metronomeSound', value);
     setState(() {
       _metronomeSound = value;
     });
   }
 
-  /// Sauvegarde l’objectif quotidien
-  Future<void> _updateDailyGoal(int newGoal) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('dailyGoal', newGoal);
+  void _changeDailyGoal(bool increase) {
     setState(() {
-      _dailyGoal = newGoal;
+      _dailyGoal = increase
+          ? _dailyGoal + 5
+          : (_dailyGoal > 5 ? _dailyGoal - 5 : _dailyGoal);
     });
+    _saveInt('dailyGoal', _dailyGoal);
   }
 
-  /// Sauvegarde le thème
-  Future<void> _updateTheme(ThemeMode mode) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('themeMode', mode.index);
-    setState(() {
-      _themeMode = mode;
-    });
-  }
-
-  /// Gère la connexion / déconnexion
-  Future<void> _navigateToLogin() async {
-    bool loggedIn = _username != null;
-    final prefs = await SharedPreferences.getInstance();
-
-    if (loggedIn) {
-      // Déconnexion
-      await prefs.remove('username');
+  void _navigateToLogin() async {
+    if (_username != null) {
       setState(() {
         _username = null;
       });
+      _saveString('username', null);
       return;
     }
 
@@ -93,11 +203,24 @@ class _SettingsState extends State<Settings> {
       kLoginRoute);
 
     if (result is String) {
-      await prefs.setString('username', result);
       setState(() {
         _username = result;
       });
+      _saveString('username', result);
     }
+  }
+
+  void _changeTheme(ThemeMode mode) {
+    if (mode == _themeMode) return;
+    // save to prefs
+    _saveString('themeMode', mode.toString().split('.').last);
+    final parentState = appKey.currentState;
+    if (parentState != null) {
+      parentState.changeTheme(mode);
+    }
+    setState(() {
+      _themeMode = mode;
+    });
   }
 
   @override
@@ -106,12 +229,13 @@ class _SettingsState extends State<Settings> {
       appBar: AppBar(title: const Text("Paramètres")),
       body: ListView(
         children: [
-          // Section profil
+          // Profil
           ListTile(
             leading: const Icon(Icons.person),
             title: Text(_username ?? "Non connecté"),
-            subtitle: Text(
-                _username != null ? "Bienvenue, $_username" : "Appuyez pour vous connecter"),
+            subtitle: Text(_username != null
+                ? "Bienvenue, $_username"
+                : "Appuyez pour vous connecter"),
             trailing: ElevatedButton(
               onPressed: _navigateToLogin,
               child: Text(_username == null ? "Connexion" : "Déconnexion"),
@@ -119,10 +243,12 @@ class _SettingsState extends State<Settings> {
           ),
           const Divider(),
 
-          // Notifications d’entraînement
+          // Notifications
           SwitchListTile(
             title: const Text("Rappel d’entraînement"),
-            subtitle: const Text("Recevoir une notification quotidienne"),
+            subtitle: Text(_notificationsEnabled
+                ? "Tous les jours à ${_notifTime?.format(context) ?? "??"}"
+                : "Recevoir une notification quotidienne"),
             value: _notificationsEnabled,
             onChanged: _toggleNotifications,
             secondary: const Icon(Icons.notifications),
@@ -147,22 +273,15 @@ class _SettingsState extends State<Settings> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.remove),
-                  onPressed: () {
-                    if (_dailyGoal > 5) {
-                      _updateDailyGoal(_dailyGoal - 5);
-                    }
-                  },
+                  onPressed: () => _changeDailyGoal(false),
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
-                  onPressed: () {
-                    _updateDailyGoal(_dailyGoal + 5);
-                  },
+                  onPressed: () => _changeDailyGoal(true),
                 ),
               ],
             ),
           ),
-          const Divider(),
 
           // Choix du thème
           ListTile(
@@ -171,9 +290,11 @@ class _SettingsState extends State<Settings> {
             subtitle: Text(_themeMode == ThemeMode.light
                 ? "Clair"
                 : _themeMode == ThemeMode.dark
-                ? "Sombre"
-                : "Automatique (système)"),
+                    ? "Sombre"
+                    : "Automatique (système)"),
             trailing: DropdownButton<ThemeMode>(
+              style:
+              TextStyle(color: Theme.of(context).primaryColor),
               value: _themeMode,
               items: const [
                 DropdownMenuItem(
@@ -191,7 +312,7 @@ class _SettingsState extends State<Settings> {
               ],
               onChanged: (value) {
                 if (value != null) {
-                  _updateTheme(value);
+                  _changeTheme(value);
                 }
               },
             ),

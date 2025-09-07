@@ -10,9 +10,21 @@ void main() {
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 }
+final GlobalKey<_GuitarAppState> appKey = GlobalKey<_GuitarAppState>();
 
-class GuitarApp extends StatelessWidget {
+class GuitarApp extends StatefulWidget {
   const GuitarApp({super.key});
+  @override
+  State<GuitarApp> createState() => _GuitarAppState();
+}
+
+class _GuitarAppState extends State<GuitarApp>{
+  ThemeMode _themeMode = ThemeMode.system;
+  void changeTheme(ThemeMode themeMode) {
+    setState(() {
+      _themeMode = themeMode;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +36,7 @@ class GuitarApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: lightTheme,
           darkTheme: darkTheme,
-          themeMode: ThemeMode.system,
+          themeMode: _themeMode,
           initialRoute: kHomeRoute,
           routes: router,
         );
