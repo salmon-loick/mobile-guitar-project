@@ -2,7 +2,23 @@
 
 ## 📁 Présentation des Principaux Dossiers
 
-> Une présentation des principaux dossiers de votre dépôt. Quelles sont les différentes ressources qu'il contient à la racine ? Par exemple, les maquettes, vos inspirations, etc. Si vous avez fait des efforts quant à l'organisation de vos fichiers dans le dossier `lib`, expliquez-les ici.
+**On retrouve dans le projet :**
+
+- Le dossier *img* où se trouve les images utilisées dans le README
+
+- Les dossiers *android, ios* et *web* sont les dossiers de compilation générés par flutter.
+
+- Le dossier *assets*, lui est le dossier où on va retrouver les images et les sons utilisés dans l'application.
+ 
+- Le dossier ***lib***, lui est le dossier où on va retrouver tout le code.
+
+**On retrouve dans le dossier lib :**
+
+- Le dossier *model* où se trouve les classes de données et de gestion de l'accordage.
+- Le dossier *partials* où se trouve des composants et des portions d'écran comme des formulaires, des boutons, etc.
+- Le dossier *routes* où on retrouve les constantes qui indiquent les routes ainsi que le router qui lie les pages entre elles.
+- Le dossier *screens* où on retrouve les différents écrans de l'application.
+- Le dossier *styles* où on retrouve les constantes de styles utilisées dans l'application.
 
 ## 🚀 Présentation de l'Application
 
@@ -66,8 +82,7 @@ Fender Tune est une application d'accordage développée par la célèbre marque
 
 ![Fender Tune](img/Fender.jpg)
 
-## Moodboard 
-![Moodboard](img/Moodboard.png)
+
 ## 🎯 Public Cible
 
 Notre application s'adresse à tous les passionnés de guitare, qu'ils soient débutants ou experts.
@@ -104,23 +119,46 @@ En tant qu'utilisateur, je dois pouvoir sauvegarder via mon compte le type d'acc
 
 En tant que développeur, je souhaite donner aux utilisateurs des badges pour qu'il passe plus de temps sur l'application.
 
+## Moodboard
+![Moodboard](img/Moodboard.png)
+## Color Palette
+### Light Palette
+![Light Color Palette](img/light.png)
+### Dark Palette
+![Dark Color Palette](img/dark.png)
+### Invalid & Valid Colors
+![Invalid/Valid](img/invalid_valid.png)
+
 ## 📈 État d'Avancement
 
-- [ ] Ecran de connexion
-- [ ] Ecran d'accordage 
+- [x] Ecran de connexion
+- [x] Ecran d'accordage 
 - [x] Ecran de métronome
 - [x] Ecran d'accords
-- [ ] Ecran de paramètres
-- [ ] Persistance des données
+- [x] Ecran de paramètres
+- [x] Persistance des données
 - [ ] Notifications
 - [ ] Système de badges
-- [ ] Changement d'instrument 
 - [ ] Paramétrage de l'accordage
 - [ ] configuration de la signature temporelle
-- [ ] Gamification 
 
 ## ⚙️ Compilation de l'Application
+### Pré-requis
+#### SDKs
+- Java Development Kit (JDK) 11 ou supérieur
+- Android SDK version 34
+- Flutter SDK version 3.5.3
+#### Firebase
+- Configurer un projet Firebase et activer l'authentification par e-mail/mot de passe.
+  - Vous devriez avoir un fichier `firebase_options.dart` généré par le CLI FlutterFire pendant la configuration.
+- Télécharger le fichier `google-services.json` depuis la console Firebase et le placer dans le répertoire `android/app` de votre projet Flutter.
 
-> Enfin, nous vous demandons d'ajouter une section pour les développeurs où vous expliquez ce qu'il faut faire pour pouvoir compiler l'application. Cette documentation doit être simple et surtout efficace.
-
-<!-- vim: set spelllang=fr :-->
+### Étapes de Compilation
+- Installer les dépendances:
+```bash
+    flutter pub get
+```
+- Exécuter l'application:
+```bash
+    flutter run
+```
