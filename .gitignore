@@ -2,7 +2,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=flutter,java,swift,android,intellij,gradle,web,windows
 
 
-
 ### Android ###
 # Gradle files
 .gradle/
@@ -397,3 +396,5 @@ gradle-app.setting
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter,java,swift,android,intellij,gradle,web,windows
 
+/lib/firebase_options.dart
+/firebase.json

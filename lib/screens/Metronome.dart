@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Metronome extends StatefulWidget {
   const Metronome({super.key});
@@ -16,9 +17,14 @@ class _MetronomeState extends State<Metronome> {
   Timer? timer;
   final AudioPlayer _player = AudioPlayer();
 
+  late double _volume;
+
   @override
   void initState() {
     super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      _volume = prefs.getBool('metronomeSound') ?? true ? 1.0 : 0.0;
+    });
     // Préchargement des sons pour éviter la latence du premier play
     _player.setSource(AssetSource('sounds/tick.wav'));
     _player.setSource(AssetSource('sounds/tock.wav'));
@@ -61,9 +67,9 @@ class _MetronomeState extends State<Metronome> {
   /// Joue le son du battement
   Future<void> _playTick(bool isAccent) async {
     if (isAccent) {
-      await _player.play(AssetSource('sounds/tick.wav'), volume: 1.0);
+      await _player.play(AssetSource('sounds/tick.wav'), volume: _volume);
     } else {
-      await _player.play(AssetSource('sounds/tock.wav'), volume: 1.0);
+      await _player.play(AssetSource('sounds/tock.wav'), volume: _volume);
     }
   }
 
@@ -76,8 +82,12 @@ class _MetronomeState extends State<Metronome> {
 
   @override
   Widget build(BuildContext context) {
-    final activeColor = Theme.of(context).highlightColor;
-    final inactiveColor = Theme.of(context).unselectedWidgetColor;
+    final activeColor = Theme
+        .of(context)
+        .highlightColor;
+    final inactiveColor = Theme
+        .of(context)
+        .unselectedWidgetColor;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Métronome")),
@@ -114,7 +124,10 @@ class _MetronomeState extends State<Metronome> {
                 ),
                 Text(
                   "$bpm BPM",
-                  style: Theme.of(context).textTheme.headlineMedium,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headlineMedium,
                 ),
                 IconButton(
                   onPressed: () =>
@@ -147,7 +160,7 @@ class _MetronomeState extends State<Metronome> {
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),

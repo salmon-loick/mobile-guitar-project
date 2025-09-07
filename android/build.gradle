@@ -1,6 +1,9 @@
+plugins {
+    id 'com.google.gms.google-services' version '4.3.15' apply false
+}
 ext.flutter = [
         compileSdkVersion: 34,
-        minSdkVersion    : 21,
+        minSdkVersion    : 27,
         targetSdkVersion : 34,
         ndkVersion       : "25.1.8937393",
         source : ".."
@@ -24,7 +27,7 @@ subprojects {
             try {
                 proj.android.compileSdkVersion = 34
                 if (proj.android.hasProperty("defaultConfig")) {
-                    proj.android.defaultConfig.minSdkVersion = 21
+                    proj.android.defaultConfig.minSdkVersion = 27
                     proj.android.defaultConfig.targetSdkVersion = 34
                 }
             } catch (ignore) { /* certains modules peuvent échouer, on ignore */ }
@@ -32,6 +35,10 @@ subprojects {
     }
 }
 
+
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
+

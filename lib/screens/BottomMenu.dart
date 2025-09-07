@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_guitar_project/screens/Accords.dart';
 import 'Metronome.dart';
+import 'Settings.dart';
 import 'Tuner.dart';
 
 
@@ -42,7 +43,9 @@ class BottomMenu extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.settings, size : 26),
-            onPressed: () {},
+            onPressed: () {
+              changeChild(Settings());
+            },
           ),
           IconButton(
             icon: const Icon(Icons.library_music),
