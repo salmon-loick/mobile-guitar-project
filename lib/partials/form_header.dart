@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../styles/constants.dart';
+import 'package:mobile_guitar_project/styles/colors.dart';
+import 'package:mobile_guitar_project/styles/constants.dart';
 
 @immutable
 class FormHeader extends StatelessWidget {
@@ -19,7 +20,8 @@ class FormHeader extends StatelessWidget {
         children: [
           Text(
             'GuitarWatch',
-            style: kLargeTitleStyle,
+            style: kLargeTitleStyle.copyWith(color: kDarkTextColor),
+
           ),
           Spacer(),
         ],
