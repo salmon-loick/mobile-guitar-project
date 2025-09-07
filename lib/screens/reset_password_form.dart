@@ -93,13 +93,10 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                                       .validate()) {
                                 FirebaseAuth.instance
                                     .sendPasswordResetEmail(email: _email);
-                                Navigator.pushNamed(context, kLoginRoute)
-                                    .then((value) {
-                                  return ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                          content: Text(
-                                              'Un email de réinitialisation a été envoyé à $_email')));
-                                });
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        'Un email de réinitialisation a été envoyé à $_email')));
+                                Navigator.pop(context);
                               }
                             }),
                       ],

@@ -11,7 +11,7 @@ import '../partials/form/password_input.dart';
 import '../styles/constants.dart';
 
 class LoginForm extends StatelessWidget {
-  LoginForm({Key? key}) : super(key: key);
+  LoginForm({super.key});
   final _loginFormKey = GlobalKey<FormState>();
   String _email = "";
   String _password = "";
@@ -67,10 +67,17 @@ class LoginForm extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Link(
-                              text: 'Créer un compte',
-                              onTap: () {
-                                Navigator.pushNamed(context, kRegisterRoute);
-                              }),
+                            text: 'Créer un compte',
+                            onTap: () {
+                              Navigator.pushNamed(context, kRegisterRoute).then((result) {
+                                // Si register retourne un résultat (par ex. displayName),
+                                // on le propage vers la page précédente (settings) en fermant login
+                                if (result != null && result is String) {
+                                  Navigator.pop(context, result);
+                                }
+                              });
+                            },
+                          ),
                           Link(
                             text: 'Mot de passe oublié',
                             onTap: () {
@@ -97,7 +104,7 @@ class LoginForm extends StatelessWidget {
                                     content: Text(
                                         'Bonjour ${FirebaseAuth.instance.currentUser!.displayName}'),
                                   ));
-                                  Navigator.pushNamed(context, kHomeRoute);
+                                  Navigator.pop(context,FirebaseAuth.instance.currentUser!.displayName);
                                 });
                               } on FirebaseAuthException catch (e) {
                                 ScaffoldMessenger.of(context).showSnackBar(

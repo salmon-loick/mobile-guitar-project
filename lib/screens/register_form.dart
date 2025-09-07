@@ -133,7 +133,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                           .showSnackBar(SnackBar(
                                         content: Text('Bonjour ${_userName}'),
                                       ));
-                                      Navigator.pushNamed(context, kHomeRoute);
+                                      Navigator.pop(context, _userName);
                                     });
                                   } on FirebaseAuthException catch (e) {
                                     ScaffoldMessenger.of(context).showSnackBar(

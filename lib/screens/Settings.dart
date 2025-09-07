@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import '../routes/routes.dart';
+import 'Home.dart';
 import 'login_form.dart';
 
 class Settings extends StatefulWidget {
+
   const Settings({super.key});
 
   @override
@@ -16,23 +19,81 @@ class _SettingsState extends State<Settings> {
   int _dailyGoal = 30; // minutes d’entraînement par défaut
   ThemeMode _themeMode = ThemeMode.system;
 
-  void _navigateToLogin() async {
-    // Simule la navigation vers ta page de login
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  /// Charge les paramètres sauvegardés
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notificationsEnabled = prefs.getBool('notifications') ?? false;
+      _metronomeSound = prefs.getBool('metronomeSound') ?? true;
+      _dailyGoal = prefs.getInt('dailyGoal') ?? 30;
+      _username = prefs.getString('username');
+      final themeIndex = prefs.getInt('themeMode') ?? 0;
+      _themeMode = ThemeMode.values[themeIndex];
+    });
+  }
+
+  /// Sauvegarde le bool notifications
+  Future<void> _toggleNotifications(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('notifications', value);
+    setState(() {
+      _notificationsEnabled = value;
+    });
+  }
+
+  /// Sauvegarde le bool son métronome
+  Future<void> _toggleMetronomeSound(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('metronomeSound', value);
+    setState(() {
+      _metronomeSound = value;
+    });
+  }
+
+  /// Sauvegarde l’objectif quotidien
+  Future<void> _updateDailyGoal(int newGoal) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('dailyGoal', newGoal);
+    setState(() {
+      _dailyGoal = newGoal;
+    });
+  }
+
+  /// Sauvegarde le thème
+  Future<void> _updateTheme(ThemeMode mode) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('themeMode', mode.index);
+    setState(() {
+      _themeMode = mode;
+    });
+  }
+
+  /// Gère la connexion / déconnexion
+  Future<void> _navigateToLogin() async {
     bool loggedIn = _username != null;
+    final prefs = await SharedPreferences.getInstance();
+
     if (loggedIn) {
       // Déconnexion
+      await prefs.remove('username');
       setState(() {
         _username = null;
       });
       return;
     }
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => LoginForm()),
-    );
 
-    // Simule un retour avec un nom d’utilisateur
+    final result = await Navigator.pushNamed(
+      context,
+      kLoginRoute);
+
     if (result is String) {
+      await prefs.setString('username', result);
       setState(() {
         _username = result;
       });
@@ -49,9 +110,8 @@ class _SettingsState extends State<Settings> {
           ListTile(
             leading: const Icon(Icons.person),
             title: Text(_username ?? "Non connecté"),
-            subtitle: Text(_username != null
-                ? "Bienvenue, $_username"
-                : "Appuyez pour vous connecter"),
+            subtitle: Text(
+                _username != null ? "Bienvenue, $_username" : "Appuyez pour vous connecter"),
             trailing: ElevatedButton(
               onPressed: _navigateToLogin,
               child: Text(_username == null ? "Connexion" : "Déconnexion"),
@@ -64,11 +124,7 @@ class _SettingsState extends State<Settings> {
             title: const Text("Rappel d’entraînement"),
             subtitle: const Text("Recevoir une notification quotidienne"),
             value: _notificationsEnabled,
-            onChanged: (value) {
-              setState(() {
-                _notificationsEnabled = value;
-              });
-            },
+            onChanged: _toggleNotifications,
             secondary: const Icon(Icons.notifications),
           ),
 
@@ -77,11 +133,7 @@ class _SettingsState extends State<Settings> {
             title: const Text("Sons du métronome"),
             subtitle: const Text("Activer/désactiver le son"),
             value: _metronomeSound,
-            onChanged: (value) {
-              setState(() {
-                _metronomeSound = value;
-              });
-            },
+            onChanged: _toggleMetronomeSound,
             secondary: const Icon(Icons.music_note),
           ),
 
@@ -96,17 +148,15 @@ class _SettingsState extends State<Settings> {
                 IconButton(
                   icon: const Icon(Icons.remove),
                   onPressed: () {
-                    setState(() {
-                      if (_dailyGoal > 5) _dailyGoal -= 5;
-                    });
+                    if (_dailyGoal > 5) {
+                      _updateDailyGoal(_dailyGoal - 5);
+                    }
                   },
                 ),
                 IconButton(
                   icon: const Icon(Icons.add),
                   onPressed: () {
-                    setState(() {
-                      _dailyGoal += 5;
-                    });
+                    _updateDailyGoal(_dailyGoal + 5);
                   },
                 ),
               ],
@@ -141,9 +191,7 @@ class _SettingsState extends State<Settings> {
               ],
               onChanged: (value) {
                 if (value != null) {
-                  setState(() {
-                    _themeMode = value;
-                  });
+                  _updateTheme(value);
                 }
               },
             ),

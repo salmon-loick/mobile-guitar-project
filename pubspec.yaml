@@ -53,6 +53,7 @@ dev_dependencies:
   firebase_storage: ^13.0.1
   firebase_core: ^4.1.0
   email_validator: ^2.1.17
+  shared_preferences: ^2.0.0
   flutter_test:
     sdk: flutter
 
